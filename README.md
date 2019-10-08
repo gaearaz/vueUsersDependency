@@ -1,6 +1,7 @@
 # vueUsersDependency
 
 The system must
+
  Store user information and dependencies in a database
 
  Allow to create, edit and delete new dependencies name, coordinator, maximum number of users, location, active (boolean).
