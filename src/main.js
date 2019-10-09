@@ -2,7 +2,7 @@ import Vue from 'vue'
 import vuetify from './plugins/vuetify'
 import App from '@/App.vue'
 import router from '@/router'
-//import store from '@/store'
+import store from '@/store'
 import * as firebase from 'firebase'
 
 Vue.config.productionTip = false
@@ -10,6 +10,7 @@ Vue.config.productionTip = false
 new Vue({
   vuetify,
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
 
@@ -24,4 +25,6 @@ var config = {
   measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
 }
 
+window.console.log(config)
 firebase.initializeApp(config)
+firebase.analytics()

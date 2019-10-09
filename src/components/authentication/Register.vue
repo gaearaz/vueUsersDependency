@@ -14,6 +14,12 @@
             required
           ></v-text-field>
 
+          <v-text-field v-model="name" :rules="nameRules" label="Name" required></v-text-field>
+
+          <v-text-field v-model="lastName" :rules="lastNameRules" label="Last Name" required></v-text-field>
+
+          <v-text-field v-model="dependency" label="Dependency" required></v-text-field>
+
           <v-btn :disabled="!valid" color="success" @click="validate">Register</v-btn>
 
           <v-btn color="error" @click="reset">Reset Form</v-btn>
@@ -34,7 +40,14 @@ export default {
     ],
     password: "",
     confirmPassword: "",
-    passwordRules: [v => !!v || "Password and Confirm password Required"]
+    passwordRules: [v => !!v || "Password and Confirm password Required"],
+    name: "",
+    lastName: "",
+    dependency: "",
+    valid_to: "Always",
+    active: false,
+    nameRules: [v => !!v || "Name is required"],
+    lastNameRules: [v => !!v || "Last Name is required"]
   }),
 
   methods: {
@@ -52,7 +65,12 @@ export default {
     registerWithFirebase() {
       const user = {
         email: this.email,
-        password: this.password
+        password: this.password,
+        name: this.name,
+        lastName: this.lastName,
+        dependency: this.dependency,
+        valid_to: "Always",
+        active: false
       };
       this.$store.dispatch("signUpAction", user);
     }
