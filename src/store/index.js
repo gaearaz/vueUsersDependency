@@ -1,6 +1,8 @@
+/* eslint-disable */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from 'firebase'
+import router from '@/router'
 
 Vue.use(Vuex)
 
@@ -9,7 +11,9 @@ export default new Vuex.Store({
     state: {
         user: null,
         status: null,
-        error: null
+        error: null,
+
+        users: []
 
     },
     mutations: {
@@ -28,8 +32,11 @@ export default new Vuex.Store({
 
         setError(state, payload) {
             state.error = payload
-        }
+        },
 
+        setUsers(state, payload) {
+            state.users = payload
+        }
     },
     actions: {
         signUpAction({ commit }, payload) {
@@ -38,22 +45,48 @@ export default new Vuex.Store({
             firebase.firestore().collection("Users").doc(payload.email).set(payload)
                 .then((response) => {
                     alert('success')
-                    commit('setUser', payload.email)
+                    // commit('setUser', payload.email)
                     commit('setStatus', 'success')
                     commit('setError', null)
+                    router.push('login')
                 })
                 .catch((error) => {
                     alert('failure')
                     commit('setStatus', 'failure')
                     commit('setError', error.message)
                 })
+        },
 
-            // firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+        signInAction({ commit }, payload) {
+            firebase.firestore().collection("Users").doc(payload.email).get().then(doc => {
+                if (doc.exists) {
+                    alert('Loggin!')
+                    commit('setUser', doc.data())
+                    commit('setStatus', 'success')
+                    commit('setError', null)
+                    router.push('homeUser')
+                } else {
+                    // doc.data() will be undefined in this case
+                    window.console.log("No such document!");
+                    alert('No such document!')
+                }
+            }).catch((error) => {
+                window.console.log("Error getting document:", error);
+                alert('Error getting document:')
+                commit('setStatus', 'failure')
+                commit('setError', error.message)
+            });
+        },
+
+        signOutAction({ commit }) {
+            router.push('/')
+            commit('setUser', null)
+            commit('setStatus', 'success')
+            commit('setError', null)
+
+            // firebase.auth().signOut()
             //     .then((response) => {
-            //         alert('success')
-            //         // response will have user
-            //         // user will have uid will be updated to the state
-            //         commit('setUser', response.user.uid)
+            //         commit('setUser', null)
             //         commit('setStatus', 'success')
             //         commit('setError', null)
             //     })
@@ -61,46 +94,35 @@ export default new Vuex.Store({
             //         commit('setStatus', 'failure')
             //         commit('setError', error.message)
             //     })
-
-
         },
 
-        signInAction({ commit }, payload) {
-            firebase.firestore().collection("Users").doc(payload.email).get().then(doc => {
-                if (doc.exists) {
-                    window.console.log("Document data:", doc.data());
-                    alert('Loggin!')
-                    commit('setUser', payload.email)
-                    commit('setStatus', 'success')
-                    commit('setError', null)
-                } else {
-                    // doc.data() will be undefined in this case
-                    window.console.log("No such document!");
-                }
-            }).catch((error) => {
-                window.console.log("Error getting document:", error);
-                alert('failure')
-                commit('setStatus', 'failure')
-                commit('setError', error.message)
-            });
+        getUsers({ commit }) {
+            let users = []
+            firebase.firestore().collection("Users").get().then(
+                querySnapshot => {
+                    querySnapshot.forEach(doc => {
+                        users.push(doc.data())
+                    })
+                    commit('setUsers', users)
+
+                });
+            window.console.log(this.getters.users)
         },
 
-        signOutAction({ commit }) {
-            firebase.auth().signOut()
+        addDependencyAccion() {
+            firebase.firestore().collection("Dependency").doc(payload.name).set(payload)
                 .then((response) => {
-                    commit('setUser', null)
-                    commit('setStatus', 'success')
-                    commit('setError', null)
+                    alert('Dependence added successfully')
+                    // router.push('login')
                 })
                 .catch((error) => {
-                    commit('setStatus', 'failure')
+                    alert('failure')
                     commit('setError', error.message)
                 })
         }
     },
 
     getters: {
-
         status(state) {
             return state.status
         },
@@ -111,6 +133,9 @@ export default new Vuex.Store({
 
         error(state) {
             return state.error
+        },
+        users(state) {
+            return state.users
         }
     }
 })

@@ -64,10 +64,10 @@ export default {
 
     registerWithFirebase() {
       const user = {
-        email: this.email,
-        password: this.password,
         name: this.name,
         lastName: this.lastName,
+        email: this.email,
+        password: this.password,
         dependency: this.dependency,
         valid_to: "Always",
         active: false

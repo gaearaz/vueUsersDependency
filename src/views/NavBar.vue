@@ -1,21 +1,22 @@
 <template>
+  <!-- display the navigation bar -->
   <v-toolbar>
     <v-toolbar-items>
-      <v-btn  tag="span" style="cursor: pointer">VUE USERS DEPENDENCY</v-btn>
+      <v-btn tag="span" style="cursor: pointer">VUE USERS DEPENDENCY</v-btn>
     </v-toolbar-items>
-
     <v-spacer></v-spacer>
-
-    <v-toolbar-items class="hidden-xs-only">
-      <v-btn  v-for="item in items" :key="item.title" :to="item.link">{{item.title}}</v-btn>
+    <!-- navigation bar links -->
+    <v-toolbar-items class="hidden-xs-only" v-if="!userLogedIn">
+      <v-btn v-for="item in items" :key="item.title" :to="item.link">{{item.title}}</v-btn>
       <v-spacer></v-spacer>
     </v-toolbar-items>
-
-    <v-toolbar-items class="hidden-xs-only">
-      <v-btn >Logout</v-btn>
+    <!-- sign out button -->
+    <v-toolbar-items class="hidden-xs-only" v-else>
+      <v-btn @click="logoutFromFirebase">Logout</v-btn>
     </v-toolbar-items>
   </v-toolbar>
 </template>
+
 <script>
 export default {
   computed: {
@@ -23,14 +24,24 @@ export default {
       let menuItems = [
         {
           title: "Register",
+          icon: "face",
           link: "/register"
         },
         {
           title: "Login",
+          icon: "no_encryption",
           link: "/login"
         }
       ];
       return menuItems;
+    },
+    userLogedIn() {
+      return this.$store.getters.user;
+    }
+  },
+  methods: {
+    logoutFromFirebase() {
+      this.$store.dispatch("signOutAction");
     }
   }
 };
