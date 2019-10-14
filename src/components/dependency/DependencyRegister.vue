@@ -13,6 +13,7 @@
           ></v-text-field>
 
           <v-text-field
+            type="number"
             v-model="maxNumUsers"
             :rules="maxNumUsersRules"
             label="Maximum number of users"
@@ -21,7 +22,9 @@
 
           <v-text-field v-model="location" :rules="locationRules" label="Location" required></v-text-field>
 
-          <v-text-field v-model="active" :rules="activeRules" label="Status" required></v-text-field>
+          <!-- <v-text-field v-model="active" :rules="activeRules" label="Status" required></v-text-field> -->
+
+          <v-select v-model="active" :items="itemsStatus" label="Status" solo></v-select>
 
           <v-btn :disabled="!valid" color="success" @click="validate">Register</v-btn>
 
@@ -35,6 +38,7 @@
 <script>
 export default {
   data: () => ({
+    itemsStatus: ['available','unavailable' ],
     valid: true,
     name: "",
     nameRules: [v => !!v || "Dependecy's name is required"],
@@ -43,13 +47,14 @@ export default {
     coordinatorRules: [v => !!v || "Coordinator's name is required"],
 
     maxNumUsers: "",
-    maxNumUsersRules: [],
+    // eslint-disable-next-line
+    maxNumUsersRules: [v=> /(\(?\+?[0-9]*\)?)?[0-9_\- \(\)]/.test(v) || "E-mail must be valid"],
 
     active: "",
     activeRules: [v => !!v || "Status Required"],
 
     location: "",
-    locationRules: [v => !!v || "Location is required"],
+    locationRules: [v => !!v || "Location is required"]
   }),
 
   methods: {
@@ -65,14 +70,14 @@ export default {
     },
 
     registerWithFirebase() {
-      const user = {
+      const dependency = {
         name: this.name,
         coordinator: this.coordinator,
         maxNumUsers: this.maxNumUsers,
         location: this.location,
         active: this.active
       };
-      this.$store.dispatch("addDependencyAccion", user);
+      this.$store.dispatch("addDependencyAccion", dependency);
     }
   }
 };

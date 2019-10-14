@@ -5,6 +5,7 @@ import Signin from '@/components/authentication/Signin.vue'
 import HomeUser from '@/views/HomeUser.vue'
 import Home from '@/views/Home.vue'
 import Users from '@/components/user/Users.vue'
+import DependencyRegister from '@/components/dependency/DependencyRegister.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -36,6 +37,11 @@ export default new Router({
             path: '/users',
             name: 'Users',
             component: Users
+        },
+        {
+            path: '/dependencyRegister',
+            name: 'DependencyRegister',
+            component: DependencyRegister
         },
 
     ]

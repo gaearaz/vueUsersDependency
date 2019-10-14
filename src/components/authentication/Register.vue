@@ -18,7 +18,9 @@
 
           <v-text-field v-model="lastName" :rules="lastNameRules" label="Last Name" required></v-text-field>
 
-          <v-text-field v-model="dependency" label="Dependency" required></v-text-field>
+          <!-- <v-text-field v-model="dependency" label="Dependency" required></v-text-field> -->
+
+          <v-select v-model="dependency" :items="dependenciesName" label="Dependency" solo></v-select>
 
           <v-btn :disabled="!valid" color="success" @click="validate">Register</v-btn>
 
@@ -30,6 +32,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data: () => ({
     valid: true,
@@ -58,6 +61,11 @@ export default {
       }
     },
 
+    getDependenciesWithFirebase() {
+      this.$store.dispatch("getDependencies");
+      // this.$store.dispatch("getDependenciesName");
+    },
+
     reset() {
       this.$refs.form.reset();
     },
@@ -74,6 +82,14 @@ export default {
       };
       this.$store.dispatch("signUpAction", user);
     }
+  },
+  mounted() {
+    this.getDependenciesWithFirebase();
+  },
+  computed: {
+    ...mapState({
+      dependenciesName: state => state.dependenciesName
+    })
   }
 };
 </script>

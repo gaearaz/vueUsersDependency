@@ -13,8 +13,9 @@ export default new Vuex.Store({
         status: null,
         error: null,
 
-        users: []
-
+        users: [],
+        dependencies: [],
+        dependenciesName: []
     },
     mutations: {
 
@@ -36,6 +37,13 @@ export default new Vuex.Store({
 
         setUsers(state, payload) {
             state.users = payload
+        },
+
+        setDepedencies(state, payload) {
+            state.dependencies = payload
+        },
+        setDepedenciesName(state, payload) {
+            state.dependenciesName = payload
         }
     },
     actions: {
@@ -108,8 +116,35 @@ export default new Vuex.Store({
                 });
             window.console.log(this.getters.users)
         },
+        getDependencies({ commit }) {
+            let dependencies = []
+            let dependenciesName = []
+            firebase.firestore().collection("Dependency").get().then(
+                querySnapshot => {
+                    querySnapshot.forEach(doc => {
+                        dependencies.push(doc.data())
+                        dependenciesName.push(doc.data().name)
+                    })
+                
+                    commit('setDepedencies', dependencies)
+                    window.console.log(dependenciesName)
+                    commit('setDepedenciesName', dependenciesName)
 
-        addDependencyAccion() {
+                });
+        },
+        // getDependenciesName({ commit }) {
+        //     let dependenciesName = []
+        //     this.state.dependencies.forEach(element => {
+        //         dependenciesName.push(element.name)
+        //     });
+        //     window.console.log(dependenciesName)
+        //     commit('setDepedenciesName', dependenciesName)
+
+        // }
+        
+
+        addDependencyAccion({ commit }, payload) {
+            window.console.log(payload)
             firebase.firestore().collection("Dependency").doc(payload.name).set(payload)
                 .then((response) => {
                     alert('Dependence added successfully')
@@ -136,6 +171,10 @@ export default new Vuex.Store({
         },
         users(state) {
             return state.users
+        },
+        dependencies(state) {
+            return state.dependencies
         }
+
     }
 })
