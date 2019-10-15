@@ -71,14 +71,17 @@ export default {
     },
 
     registerWithFirebase() {
+      let ran = Math.ceil(Math.random() * 1000000);
+        
       const user = {
+        id: "" + ran,
         name: this.name,
         lastName: this.lastName,
         email: this.email,
         password: this.password,
         dependency: this.dependency,
         valid_to: "Always",
-        active: false
+        active: "inactive"
       };
       this.$store.dispatch("signUpAction", user);
     }

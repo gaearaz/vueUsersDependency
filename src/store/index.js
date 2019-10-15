@@ -47,10 +47,31 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        editUserAction({ commit }, payload) {
+            firebase.firestore().collection("Users").doc(payload.id).update({
+                "name": payload.name,
+                "lastName": payload.lastName,
+                "email": payload.email,
+                "dependency": payload.dependency,
+                "valid_to": payload.valid_to,
+                "active": payload.active
+            }).then((response) => {
+                alert('success')
+                // commit('setUser', payload.email)
+                commit('setStatus', 'success')
+                commit('setError', null)
+            })
+                .catch((error) => {
+                    alert('failure')
+                    commit('setStatus', 'failure')
+                    commit('setError', error.message)
+                })
+        },
+
         signUpAction({ commit }, payload) {
             commit('setStatus', 'loading')
             // firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-            firebase.firestore().collection("Users").doc(payload.email).set(payload)
+            firebase.firestore().collection("Users").doc(payload.id).set(payload)
                 .then((response) => {
                     alert('success')
                     // commit('setUser', payload.email)
@@ -66,26 +87,27 @@ export default new Vuex.Store({
         },
 
         signInAction({ commit }, payload) {
-            firebase.firestore().collection("Users").doc(payload.email).get().then(doc => {
-                if (doc.exists) {
-                    alert('Loggin!')
-                    commit('setUser', doc.data())
-                    commit('setStatus', 'success')
-                    commit('setError', null)
-                    router.push('homeUser')
-                } else {
-                    // doc.data() will be undefined in this case
-                    window.console.log("No such document!");
+            
+            firebase.firestore().collection("Users").get().then(
+                querySnapshot => {
+                    querySnapshot.forEach(doc => {
+                        if (doc.data().email == payload.email) {
+                            window.console.log(doc.data().email)
+                            alert('Loggin!')
+                            commit('setUser', doc.data())
+                            commit('setStatus', 'success')
+                            commit('setError', null)
+                            router.push('homeUser')
+                        }
+                    })
+                }).catch((error) => {
+                    window.console.log("No such document! or Error getting document");
+                    commit('setStatus', 'failure')
                     alert('No such document!')
-                }
-            }).catch((error) => {
-                window.console.log("Error getting document:", error);
-                alert('Error getting document:')
-                commit('setStatus', 'failure')
-                commit('setError', error.message)
-            });
-        },
+                });
 
+
+        },
         signOutAction({ commit }) {
             router.push('/')
             commit('setUser', null)
@@ -125,7 +147,7 @@ export default new Vuex.Store({
                         dependencies.push(doc.data())
                         dependenciesName.push(doc.data().name)
                     })
-                
+
                     commit('setDepedencies', dependencies)
                     window.console.log(dependenciesName)
                     commit('setDepedenciesName', dependenciesName)
@@ -141,11 +163,11 @@ export default new Vuex.Store({
         //     commit('setDepedenciesName', dependenciesName)
 
         // }
-        
+
 
         addDependencyAccion({ commit }, payload) {
             window.console.log(payload)
-            firebase.firestore().collection("Dependency").doc(payload.name).set(payload)
+            firebase.firestore().collection("Dependency").doc(payload.id).set(payload)
                 .then((response) => {
                     alert('Dependence added successfully')
                     // router.push('login')

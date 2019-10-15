@@ -38,7 +38,7 @@
 <script>
 export default {
   data: () => ({
-    itemsStatus: ['available','unavailable' ],
+    itemsStatus: ["available", "unavailable"],
     valid: true,
     name: "",
     nameRules: [v => !!v || "Dependecy's name is required"],
@@ -48,7 +48,9 @@ export default {
 
     maxNumUsers: "",
     // eslint-disable-next-line
-    maxNumUsersRules: [v=> /(\(?\+?[0-9]*\)?)?[0-9_\- \(\)]/.test(v) || "E-mail must be valid"],
+    maxNumUsersRules: [
+      v => /(\(?\+?[0-9]*\)?)?[0-9_\- \(\)]/.test(v) || "E-mail must be valid"
+    ],
 
     active: "",
     activeRules: [v => !!v || "Status Required"],
@@ -70,7 +72,9 @@ export default {
     },
 
     registerWithFirebase() {
+      let ran = Math.ceil(Math.random() * 1000000);
       const dependency = {
+        id: ""+ran,
         name: this.name,
         coordinator: this.coordinator,
         maxNumUsers: this.maxNumUsers,
