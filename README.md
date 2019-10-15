@@ -1,6 +1,7 @@
 # Vue users and dependencies
 
 ## Instructions 
+```
 If you want that this project work you need:
     1) Create a file named .env.development in the root of the project
     2) Into of file (.env.development) put:
@@ -17,7 +18,7 @@ If you want that this project work you need:
 
     I don't share this data because is a personal data about my firebase database
     
-
+```
 ## Project setup
 ```
 npm install
