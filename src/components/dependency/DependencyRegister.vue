@@ -36,6 +36,8 @@
 </template>
 
 <script>
+
+
 export default {
   data: () => ({
     itemsStatus: ["available", "unavailable"],

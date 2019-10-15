@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import vuetify from './plugins/vuetify'
 import App from '@/App.vue'
-import router from '@/router'
+import { router } from '../src/router/index'
 import store from '@/store'
 import * as firebase from 'firebase'
 
@@ -18,7 +18,7 @@ var config = {
   measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
 }
 
-window.console.log(config)
+
 firebase.initializeApp(config)
 
 new Vue({

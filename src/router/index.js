@@ -8,9 +8,9 @@ import Users from '@/components/user/Users.vue'
 import DependencyRegister from '@/components/dependency/DependencyRegister.vue'
 import Dependencies from '@/components/dependency/Dependencies.vue'
 
-Vue.use(Router)
+Vue.use(Router);
 
-export default new Router({
+export const router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
@@ -51,4 +51,18 @@ export default new Router({
             component: Dependencies
         }
     ]
+
+
+});
+
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/login', '/register'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = sessionStorage.getItem('user');
+
+    if (authRequired && !loggedIn) {
+        return next('/login');
+    }
+
+    next();
 })

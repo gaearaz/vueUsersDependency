@@ -61,6 +61,14 @@
               required
             ></v-text-field>
 
+            <v-text-field
+            :disabled="editing"
+              v-model="valid_to"
+              :rules="valid_toRules"
+              label="Valid to mm/dd/yyyy"
+              required
+            ></v-text-field>
+
             <v-select
               :disabled="editing"
               v-model="dependency"
@@ -68,9 +76,7 @@
               label="Dependency"
               solo
             ></v-select>
-
-            <v-text-field :disabled="editing" v-model="valid_to" label="Valid to" required></v-text-field>
-
+            
             <v-select :disabled="editing" v-model="active" :items="statusArr" label="Status" solo></v-select>
 
             <v-btn :disabled="!valid || editing" color="success" @click="validate">Edit</v-btn>
@@ -99,6 +105,13 @@ export default {
     lastName: "",
     dependency: "",
     valid_to: "",
+    valid_toRules: [
+      v =>
+        /((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})/.test(
+          v
+        ) || "Date must be valid",
+      v => !!v || "Valid to is required"
+    ],
     active: "",
     nameRules: [v => !!v || "Name is required"],
     lastNameRules: [v => !!v || "Last Name is required"],
@@ -166,7 +179,6 @@ export default {
   mounted() {
     this.getUsersWithFirebase();
     this.getDependenciesWithFirebase();
-    window.console.log("Llega!");
   }
 };
 </script>

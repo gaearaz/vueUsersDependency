@@ -2,7 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from 'firebase'
-import router from '@/router'
+import { router } from '../router/index'
 
 Vue.use(Vuex)
 
@@ -56,26 +56,25 @@ export default new Vuex.Store({
                 "valid_to": payload.valid_to,
                 "active": payload.active
             }).then((response) => {
-                alert('success')
-                // commit('setUser', payload.email)
+                alert('User edited successfully')
                 commit('setStatus', 'success')
                 commit('setError', null)
             })
                 .catch((error) => {
-                    alert('failure')
+                    alert('Failure editing user')
                     commit('setStatus', 'failure')
                     commit('setError', error.message)
                 })
         },
         deleteUserAction({ commit }, payload) {
             firebase.firestore().collection("Users").doc(payload.id).delete().then((response) => {
-                alert('User deleted')
+                alert('User deleted successfully')
                 // commit('setUser', payload.email)
                 commit('setStatus', 'success')
                 commit('setError', null)
             })
                 .catch((error) => {
-                    alert('failure delete user')
+                    alert('Failure delete user')
                     commit('setStatus', 'failure')
                     commit('setError', error.message)
                 })
@@ -94,19 +93,19 @@ export default new Vuex.Store({
                 commit('setError', null)
             })
                 .catch((error) => {
-                    alert('failure')
+                    alert('Failure editing dependency')
                     commit('setStatus', 'failure')
                     commit('setError', error.message)
                 })
         },
         deleteDependencyAction({ commit }, payload) {
             firebase.firestore().collection("Dependency").doc(payload.id).delete().then((response) => {
-                alert('Dependency deleted')
+                alert('Dependency deleted successfully')
                 commit('setStatus', 'success')
                 commit('setError', null)
             })
                 .catch((error) => {
-                    alert('failure delete dependency')
+                    alert('Failure delete dependency')
                     commit('setStatus', 'failure')
                     commit('setError', error.message)
                 })
@@ -116,14 +115,14 @@ export default new Vuex.Store({
             // firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
             firebase.firestore().collection("Users").doc(payload.id).set(payload)
                 .then((response) => {
-                    alert('success')
+                    alert('Successfully registered')
                     // commit('setUser', payload.email)
                     commit('setStatus', 'success')
                     commit('setError', null)
                     router.push('login')
                 })
                 .catch((error) => {
-                    alert('failure')
+                    alert('Registration failed')
                     commit('setStatus', 'failure')
                     commit('setError', error.message)
                 })
@@ -135,16 +134,17 @@ export default new Vuex.Store({
                 querySnapshot => {
                     querySnapshot.forEach(doc => {
                         if (doc.data().email == payload.email) {
-                            window.console.log(doc.data().email)
+                           
                             alert('Loggin!')
                             commit('setUser', doc.data())
+                            sessionStorage.setItem('user', doc.data());
                             commit('setStatus', 'success')
                             commit('setError', null)
                             router.push('homeUser')
                         }
                     })
                 }).catch((error) => {
-                    window.console.log("No such document! or Error getting document");
+                    alert('Login failed!')
                     commit('setStatus', 'failure')
                     alert('No such document!')
                 });
@@ -152,21 +152,12 @@ export default new Vuex.Store({
 
         },
         signOutAction({ commit }) {
+            alert('You have successfully left')
             router.push('/')
             commit('setUser', null)
+            sessionStorage.removeItem('user')
             commit('setStatus', 'success')
             commit('setError', null)
-
-            // firebase.auth().signOut()
-            //     .then((response) => {
-            //         commit('setUser', null)
-            //         commit('setStatus', 'success')
-            //         commit('setError', null)
-            //     })
-            //     .catch((error) => {
-            //         commit('setStatus', 'failure')
-            //         commit('setError', error.message)
-            //     })
         },
 
         getUsers({ commit }) {
@@ -179,7 +170,7 @@ export default new Vuex.Store({
                     commit('setUsers', users)
 
                 });
-            window.console.log(this.getters.users)
+           
         },
         getDependencies({ commit }) {
             let dependencies = []
@@ -190,33 +181,20 @@ export default new Vuex.Store({
                         dependencies.push(doc.data())
                         dependenciesName.push(doc.data().name)
                     })
-
                     commit('setDepedencies', dependencies)
-                    window.console.log(dependenciesName)
+               
                     commit('setDepedenciesName', dependenciesName)
-
                 });
         },
-        // getDependenciesName({ commit }) {
-        //     let dependenciesName = []
-        //     this.state.dependencies.forEach(element => {
-        //         dependenciesName.push(element.name)
-        //     });
-        //     window.console.log(dependenciesName)
-        //     commit('setDepedenciesName', dependenciesName)
-
-        // }
-
 
         addDependencyAccion({ commit }, payload) {
-            window.console.log(payload)
+            
             firebase.firestore().collection("Dependency").doc(payload.id).set(payload)
                 .then((response) => {
-                    alert('Dependence added successfully')
-                    // router.push('login')
+                    alert('Dependency added successfully')
                 })
                 .catch((error) => {
-                    alert('failure')
+                    alert('Failure adding dependency')
                     commit('setError', error.message)
                 })
         }
