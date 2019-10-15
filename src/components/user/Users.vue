@@ -13,7 +13,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in users" v-bind:key="user.email">
+          <tr v-for="user in users" v-bind:key="user.id">
             <td>{{user.name}}</td>
             <td>{{user.lastName}}</td>
             <td>{{user.email}}</td>
@@ -22,7 +22,7 @@
             <td>{{user.active}}</td>
             <td>
               <v-btn small color="primary" @click="editProcess(user)">Edit</v-btn>
-              <v-btn small color="error">Delete</v-btn>
+              <v-btn small color="error" @click="deleteUserWithFirebase(user)">Delete</v-btn>
             </td>
           </tr>
         </tbody>
@@ -147,8 +147,13 @@ export default {
       this.$store.dispatch("editUserAction", user);
     },
 
+    deleteUserWithFirebase(payload) {
+      this.$store.dispatch("deleteUserAction", payload);
+      this.getUsersWithFirebase();
+    },
+
     editProcess(payload) {
-      this.idUser= payload.id;
+      this.idUser = payload.id;
       this.editing = false;
       this.email = payload.email;
       this.name = payload.name;

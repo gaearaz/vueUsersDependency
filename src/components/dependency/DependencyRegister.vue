@@ -49,7 +49,7 @@ export default {
     maxNumUsers: "",
     // eslint-disable-next-line
     maxNumUsersRules: [
-      v => /(\(?\+?[0-9]*\)?)?[0-9_\- \(\)]/.test(v) || "E-mail must be valid"
+      v => /(\(?\+?[0-9]*\)?)?[0-9_\- \(\)]/.test(v) || "Max number of user must be valid"
     ],
 
     active: "",

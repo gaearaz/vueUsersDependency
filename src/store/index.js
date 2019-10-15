@@ -67,7 +67,50 @@ export default new Vuex.Store({
                     commit('setError', error.message)
                 })
         },
-
+        deleteUserAction({ commit }, payload) {
+            firebase.firestore().collection("Users").doc(payload.id).delete().then((response) => {
+                alert('User deleted')
+                // commit('setUser', payload.email)
+                commit('setStatus', 'success')
+                commit('setError', null)
+            })
+                .catch((error) => {
+                    alert('failure delete user')
+                    commit('setStatus', 'failure')
+                    commit('setError', error.message)
+                })
+        },
+        editDepedencyAction({ commit }, payload) {
+            firebase.firestore().collection("Dependency").doc(payload.id).update({
+                "name": payload.name,
+                "coordinator": payload.coordinator,
+                "location": payload.location,
+                "active": payload.active,
+                "maxNumUsers": payload.maxNumUsers
+            }).then((response) => {
+                alert('Dependency edited successfully')
+                // commit('setUser', payload.email)
+                commit('setStatus', 'success')
+                commit('setError', null)
+            })
+                .catch((error) => {
+                    alert('failure')
+                    commit('setStatus', 'failure')
+                    commit('setError', error.message)
+                })
+        },
+        deleteDependencyAction({ commit }, payload) {
+            firebase.firestore().collection("Dependency").doc(payload.id).delete().then((response) => {
+                alert('Dependency deleted')
+                commit('setStatus', 'success')
+                commit('setError', null)
+            })
+                .catch((error) => {
+                    alert('failure delete dependency')
+                    commit('setStatus', 'failure')
+                    commit('setError', error.message)
+                })
+        },
         signUpAction({ commit }, payload) {
             commit('setStatus', 'loading')
             // firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
@@ -87,7 +130,7 @@ export default new Vuex.Store({
         },
 
         signInAction({ commit }, payload) {
-            
+
             firebase.firestore().collection("Users").get().then(
                 querySnapshot => {
                     querySnapshot.forEach(doc => {
